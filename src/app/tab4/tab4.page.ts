@@ -3,11 +3,11 @@ import { Marcador } from '../class/marcador';
 import { Storage } from '@ionic/storage';
 
 @Component({
-  selector: 'app-tab1',
-  templateUrl: 'tab1.page.html',
-  styleUrls: ['tab1.page.scss']
+  selector: 'app-tab4',
+  templateUrl: 'tab4.page.html',
+  styleUrls: ['tab4.page.scss']
 })
-export class Tab1Page implements OnInit {
+export class Tab4Page implements OnInit {
   ngOnInit()
   {
     this.polygon = false;
@@ -17,19 +17,19 @@ export class Tab1Page implements OnInit {
       let marcador : Marcador = JSON.parse(val);
       for (let i in marcador)
       {
-        this.marcadores.push(marcador[i]);//pinta poligono comienza menor de dos como es un array  cuenta 0,1,2  tres posiciones
+        this.marcadores.push(marcador[i]);
         console.log(this.marcadores);
         if(parseInt(i)<=2)
         {
           this.paths.push(marcador[i]);
         }
-        if(parseInt(i)==3) //pinta que cuando sea igual a tres pinte uno
+        if(parseInt(i)==3)
         {
           this.polygon=true;
           this.latA = (marcador[i].lat);
           this.lngA = (marcador[i].lng);
         }
-        if(parseInt(i)==4) // pinta que cuando sea mas de cuatro pinte dos lineas
+        if(parseInt(i)==4)
         {
           this.latB = (marcador[4].lat);
           this.lngB = (marcador[4].lng);
@@ -81,3 +81,4 @@ export class Tab1Page implements OnInit {
   }
 
 }
+

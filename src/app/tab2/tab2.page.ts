@@ -1,8 +1,68 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Marcador } from '../class/marcador';
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'app-tab2',
   templateUrl: 'tab2.page.html',
   styleUrls: ['tab2.page.scss']
 })
-export class Tab2Page {}
+export class Tab2Page implements OnInit {
+  ngOnInit()
+  {
+    this.polygon = false;
+    this.polyline = false;
+    this.storage.get('marker').then((val) => 
+    {
+      let marcador : Marcador = JSON.parse(val);
+      for (let i in marcador)
+      {
+        this.marcadores.push(marcador[i]); //para puntos
+        console.log(this.marcadores);
+        this.paths.push(marcador[i]);
+      }        
+    });
+  }
+  ingresarMarcador(lat, lng, title, description){
+    const nuevoMarcador = new Marcador(lat, lng, title, description);
+    this.marcadores.push(nuevoMarcador);
+  }
+
+  marcadores : Marcador[] = [];
+  lat = 4.60972222222;
+  lng = -74.0816666667;
+  paths: Array<any> = [];
+  polygon = false;
+  latA : number;
+  latB : number;
+  lngA : number;
+  lngB : number;
+  polyline = false;
+
+  constructor(private storage: Storage){  }
+
+  agregarMarcador(evento){
+    this.ingresarMarcador(parseFloat(evento.coords.lat), parseFloat(evento.coords.lng), evento.coords.title, evento.coords.description);
+    //Almacenamiento en local storage
+    this.storage.set('marker', JSON.stringify(this.marcadores) );
+    console.log(this.marcadores.length);
+    //Creación del polígono
+     if(this.marcadores.length>=3){
+      this.paths=this.marcadores;
+      this.polygon=true;
+    //Creación de la línea
+     if(this.marcadores.length==4)
+      {
+        this.latA = parseFloat(evento.coords.lat);
+        this.lngA = parseFloat(evento.coords.lng);
+      }
+     if(this.marcadores.length==5)
+     {
+       this.latB = parseFloat(evento.coords.lat);
+       this.lngB = parseFloat(evento.coords.lng);
+       this.polyline = true;
+     }
+    }
+  }
+
+}
