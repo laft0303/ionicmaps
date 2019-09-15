@@ -12,28 +12,27 @@ export class Tab3Page implements OnInit {
   {
     this.polygon = false;
     this.polyline = false;
-    this.storage.get('marker').then((val) => 
+    this.storage.get('lineas').then((val) => 
     {
       let marcador : Marcador = JSON.parse(val);
       for (let i in marcador)
       {
-        this.marcadores.push(marcador[i]); // para lineas
+        this.marcadores.push(marcador[i]);//pinta poligono comienza menor de dos como es un array  cuenta 0,1,2  tres posiciones
         console.log(this.marcadores);
-        if (1==1)
+        if(parseInt(i)<=2)
         {
           this.paths.push(marcador[i]);
         }
-        if(parseInt(i)%2)
+        if(parseInt(i)==3) //pinta que cuando sea igual a tres pinte uno
         {
           this.polygon=true;
           this.latA = (marcador[i].lat);
           this.lngA = (marcador[i].lng);
-          this.polyline = false;
         }
-        else
+        if(parseInt(i)==4) // pinta que cuando sea mas de cuatro pinte dos lineas
         {
-          this.latB = (marcador[i].lat);
-          this.lngB = (marcador[i].lng);
+          this.latB = (marcador[4].lat);
+          this.lngB = (marcador[4].lng);
           this.polyline = true;
         }
       }        
@@ -60,25 +59,22 @@ export class Tab3Page implements OnInit {
   agregarMarcador(evento){
     this.ingresarMarcador(parseFloat(evento.coords.lat), parseFloat(evento.coords.lng), evento.coords.title, evento.coords.description);
     //Almacenamiento en local storage
-    this.storage.set('marker', JSON.stringify(this.marcadores) );
+    this.storage.set('lineas', JSON.stringify(this.marcadores) );
     console.log(this.marcadores.length);
-    //Creación del polígono
-     if(1==1){
-      this.paths=this.marcadores;
+    
+    
      //Creación de la línea
-     if(this.marcadores.length %2)
+     if(this.marcadores.length > 0)
       {
-        this.latA = parseFloat(evento.coords.lat);
-        this.lngA = parseFloat(evento.coords.lng)
-        this.polyline = false;
+        console.log(`Latitud A: ${this.latA} Longitud A: ${this.lngA}`);//concatenar  latitud a con longitud 
+        console.log(`Latitud B: ${this.latB} Longitud B: ${this.lngB}`);//concatenar  latitud a con longitud
+        
+        this.latA = this.latB ;
+        this.lngA = this.lngB;
+        this.latB = parseFloat(evento.coords.lat);
+        this.lngB = parseFloat(evento.coords.lng);
+        this.polyline = true;
       }
-    else
-     {
-       this.latB = parseFloat(evento.coords.lat);
-       this.lngB = parseFloat(evento.coords.lng);
-       this.polyline = true;
-     }
     }
-  }
 
 }
